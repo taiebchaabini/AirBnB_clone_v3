@@ -2,7 +2,7 @@
 from flask import Flask, jsonify
 from models import storage
 from api.v1.views import app_views
-from os import environ
+from os import getenv
 """
 My first API
 """
@@ -22,11 +22,8 @@ def teardown_storage(exception):
 def page_404(e):
     return jsonify({"error": "Not found"})
 
+
 if __name__ == "__main__":
-    HOST = environ.get('HBNB_API_HOST')
-    PORT = environ.get('HBNB_API_PORT')
-    if (HOST is None):
-        HOST = '0.0.0.0'
-    if (PORT is None):
-        PORT = '5000'
-    app.run(host=HOST, port=PORT, threaded=True)
+    host_api = getenv("HBNB_API_HOST", "0.0.0.0")
+    port_api = getenv("HBNB_API_PORT", "5000")
+    app.run(host=host_api, port=port_api, threaded=True)
