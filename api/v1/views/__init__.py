@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from flask import Blueprint
 """
 Blueprint for app views with url prefix to /api/v1
