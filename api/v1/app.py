@@ -3,8 +3,10 @@ from api.v1.views import app_views
 from models import storage
 from os import getenv
 from flask import make_response
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, orgins='0.0.0.0')
 app.register_blueprint(app_views)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
