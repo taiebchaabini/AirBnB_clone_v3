@@ -20,6 +20,7 @@ def teardown_storage():
 
 @app.errorhandler(404)
 def page_404():
+    """return a custom 404 error"""
     return jsonify({"error": "Not found"})
 
 
