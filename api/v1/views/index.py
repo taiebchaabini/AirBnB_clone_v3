@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """ Generates routes for Blueprint app_views """
 
+from flask import Flask
+from flask import Blueprint
 from api.v1.views import app_views
 from flask import jsonify
 from models import storage
@@ -15,7 +17,7 @@ from models.user import User
 @app_views.route('/status')
 def status():
     """ Return first simple json for route /status """
-    my_dict = {'status': "OK"}
+    my_dict = {"status": "OK"}
     return jsonify(my_dict)
 
 
