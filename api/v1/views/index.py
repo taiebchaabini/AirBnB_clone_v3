@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """ Generates routes for Blueprint app_views """
 
-from flask import Flask
-from flask import Blueprint
+
 from api.v1.views import app_views
 from flask import jsonify
 from models import storage

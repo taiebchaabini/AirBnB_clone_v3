@@ -17,6 +17,7 @@ def do_check_id(cls, review_id):
         abort(404)
     return get_review
 
+
 def do_get_reviews(place_id, review_id):
     """
        Retrieves the list of all Review objects
@@ -32,6 +33,7 @@ def do_get_reviews(place_id, review_id):
         reviews.append(c.to_dict())
     return jsonify(reviews)
 
+
 def do_delete_review(review_id):
     """
         Deletes a Review object
@@ -42,6 +44,7 @@ def do_delete_review(review_id):
     storage.save()
     response = {}
     return jsonify(response)
+
 
 def do_create_review(request, place_id):
     """
@@ -61,10 +64,13 @@ def do_create_review(request, place_id):
         review_text = body_request['text']
     except KeyError:
         abort(400, 'Missing text')
-    new_review = review.Review(text=review_text, place_id=place_id, user_id=user_id)
+    new_review = review.Review(text=review_text,
+                               place_id=place_id,
+                               user_id=user_id)
     storage.new(new_review)
     storage.save()
     return jsonify(new_review.to_dict())
+
 
 def do_update_review(review_id, request):
     """
@@ -80,8 +86,11 @@ def do_update_review(review_id, request):
     storage.save()
     return jsonify(get_review.to_dict())
 
-@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'], defaults={'review_id': None})
-@app_views.route('/reviews/<review_id>', defaults={'place_id': None}, methods=['GET', 'DELETE', 'PUT'])
+
+@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'],
+                 defaults={'review_id': None})
+@app_views.route('/reviews/<review_id>', defaults={'place_id': None},
+                 methods=['GET', 'DELETE', 'PUT'])
 def reviews(place_id, review_id):
     """
         Handle reviews requests with needed functions
