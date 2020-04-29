@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+""" Amenities routes handler """
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
@@ -6,7 +8,8 @@ from models import amenity
 
 def do_check_id(amenity_id):
     """
-        If the amenity_id is not linked to any Amenity object, raise a 404 error
+        If the amenity_id is not linked to
+        any Amenity object, raise a 404 error
     """
     try:
         get_amenity = storage.get(amenity.Amenity, amenity_id)
@@ -14,6 +17,7 @@ def do_check_id(amenity_id):
     except Exception:
         abort(404)
     return get_amenity
+
 
 def do_get_amenities(amenity_id):
     """
@@ -29,6 +33,7 @@ def do_get_amenities(amenity_id):
         amenities.append(v.to_dict())
     return jsonify(amenities)
 
+
 def do_delete_amenity(amenity_id):
     """
         Deletes a Amenity object
@@ -39,6 +44,7 @@ def do_delete_amenity(amenity_id):
     storage.save()
     response = {}
     return jsonify(response)
+
 
 def do_create_amenity(request):
     """
@@ -57,6 +63,7 @@ def do_create_amenity(request):
     storage.save()
     return jsonify(new_amenity.to_dict())
 
+
 def do_update_amenity(amenity_id, request):
     """
         Updates a Amenity object
@@ -71,7 +78,9 @@ def do_update_amenity(amenity_id, request):
     storage.save()
     return jsonify(get_amenity.to_dict())
 
-@app_views.route('/amenities/', methods=['GET', 'POST'], defaults={'amenity_id': None})
+
+@app_views.route('/amenities/', methods=['GET', 'POST'],
+                 defaults={'amenity_id': None})
 @app_views.route('/amenities/<amenity_id>', methods=['GET', 'DELETE', 'PUT'])
 def amenities(amenity_id):
     """

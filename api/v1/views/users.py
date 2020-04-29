@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+""" Users routes handler """
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
@@ -15,6 +17,7 @@ def do_check_id(user_id):
         abort(404)
     return get_user
 
+
 def do_get_users(user_id):
     """
        Retrieves the list of all User objects
@@ -29,6 +32,7 @@ def do_get_users(user_id):
         users.append(v.to_dict())
     return jsonify(users)
 
+
 def do_delete_user(user_id):
     """
         Deletes a User object
@@ -39,6 +43,7 @@ def do_delete_user(user_id):
     storage.save()
     response = {}
     return jsonify(response)
+
 
 def do_create_user(request):
     """
@@ -61,6 +66,7 @@ def do_create_user(request):
     storage.save()
     return jsonify(new_user.to_dict())
 
+
 def do_update_user(user_id, request):
     """
         Updates a User object
@@ -75,8 +81,11 @@ def do_update_user(user_id, request):
     storage.save()
     return jsonify(get_user.to_dict())
 
-@app_views.route('/users/', methods=['GET', 'POST'], defaults={'user_id': None})
-@app_views.route('/users/<user_id>', methods=['GET', 'DELETE', 'PUT'])
+
+@app_views.route('/users/', methods=['GET', 'POST'],
+                 defaults={'user_id': None})
+@app_views.route('/users/<user_id>',
+                 methods=['GET', 'DELETE', 'PUT'])
 def users(user_id):
     """
         Handle users requests with needed functions

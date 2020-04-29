@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+""" Cities routes handler """
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
@@ -16,6 +18,7 @@ def do_check_id(city_id):
         abort(404)
     return get_city
 
+
 def do_get_cities(state_id, city_id):
     """
        Retrieves the list of all City objects
@@ -31,6 +34,7 @@ def do_get_cities(state_id, city_id):
         cities.append(c.to_dict())
     return jsonify(cities)
 
+
 def do_delete_city(city_id):
     """
         Deletes a City object
@@ -41,6 +45,7 @@ def do_delete_city(city_id):
     storage.save()
     response = {}
     return jsonify(response)
+
 
 def do_create_city(request, state_id):
     """
@@ -59,6 +64,7 @@ def do_create_city(request, state_id):
     storage.save()
     return jsonify(new_city.to_dict())
 
+
 def do_update_city(city_id, request):
     """
         Updates a City object
@@ -73,8 +79,11 @@ def do_update_city(city_id, request):
     storage.save()
     return jsonify(get_city.to_dict())
 
-@app_views.route('/states/<state_id>/cities', methods=['GET', 'POST'], defaults={'city_id': None})
-@app_views.route('/cities/<city_id>', defaults={'state_id': None}, methods=['GET', 'DELETE', 'PUT'])
+
+@app_views.route('/states/<state_id>/cities', methods=['GET', 'POST'],
+                 defaults={'city_id': None})
+@app_views.route('/cities/<city_id>', defaults={'state_id': None},
+                 methods=['GET', 'DELETE', 'PUT'])
 def cities(state_id, city_id):
     """
         Handle cities requests with needed functions
