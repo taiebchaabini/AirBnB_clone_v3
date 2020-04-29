@@ -23,6 +23,6 @@ def page_404(e):
 
 
 if __name__ == "__main__":
-    host_api = getenv("HBNB_API_HOST")
-    port_api = getenv("HBNB_API_PORT")
+    host_api = getenv("HBNB_API_HOST", '0.0.0.0')
+    port_api = getenv("HBNB_API_PORT", '5000')
     app.run(host=host_api, port=port_api, threaded=True)
