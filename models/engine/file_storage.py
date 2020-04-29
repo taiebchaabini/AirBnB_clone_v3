@@ -80,7 +80,4 @@ class FileStorage:
 
     def count(self, cls=None):
         """ count fn """
-        if cls is None:
-            None
-        else:
-            return (len(self.all()))
+        return (len(self.all(cls)))
