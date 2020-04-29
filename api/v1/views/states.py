@@ -53,7 +53,7 @@ def do_create_state(request):
     try:
         body_request = request.get_json(silent=True)
         if (body_request is None):
-            abort(400, 'Not a JSON')
+            abort(400, 'Not a JSON TEST')
         state_name = body_request['name']
     except KeyError:
         abort(400, 'Missing name')
