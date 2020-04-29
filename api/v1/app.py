@@ -13,15 +13,15 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 
 @app.teardown_appcontext
-def teardown_storage():
+def teardown_storage(e):
     """closes the storage on teardown"""
     storage.close()
 
 
 @app.errorhandler(404)
-def page_404():
+def page_404(e):
     """return a custom 404 error"""
-    return jsonify({"error": "Not found"})
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
