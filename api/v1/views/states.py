@@ -10,7 +10,7 @@ def do_check_id(state_id):
     """
     try:
         get_state = storage.get(state.State, state_id)
-        get_state = get_state
+        get_state.to_dict()
     except Exception:
         abort(404)
     return get_state
