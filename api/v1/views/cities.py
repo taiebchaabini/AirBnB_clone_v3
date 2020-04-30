@@ -55,6 +55,7 @@ def do_create_city(request, state_id):
         Creates a city object
         Return: new city object
     """
+    do_check_id(state_id)
     body_request = request.get_json()
     if (body_request is None):
         abort(400, 'Not a JSON')
