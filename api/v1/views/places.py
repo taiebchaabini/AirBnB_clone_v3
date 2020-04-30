@@ -29,7 +29,10 @@ def do_get_places(city_id, place_id):
         get_place = do_check_id(place.Place, place_id).to_dict()
         return jsonify(get_place)
     my_city = storage.get(city.City, city_id)
-    all_places = my_city.places
+    try:
+        all_places = my_city.places
+    except Exception:
+        abort(404)
     places = []
     for c in all_places:
         places.append(c.to_dict())
