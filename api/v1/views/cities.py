@@ -7,12 +7,12 @@ from models import state
 from models import city
 
 
-def do_check_id(city_id):
+def do_check_id(cls, city_id):
     """
         If the city_id is not linked to any City object, raise a 404 error
     """
     try:
-        get_city = storage.get(city.City, city_id)
+        get_city = storage.get(cls, city_id)
         get_city.to_dict()
     except Exception:
         abort(404)
@@ -25,7 +25,7 @@ def do_get_cities(state_id, city_id):
        if city_id is not none get a City object
     """
     if (city_id is not None):
-        get_city = do_check_id(city_id).to_dict()
+        get_city = do_check_id(city.City, city_id).to_dict()
         return jsonify(get_city)
     my_state = storage.get(state.State, state_id)
     try:
@@ -43,7 +43,7 @@ def do_delete_city(city_id):
         Deletes a City object
         Return: an empty dictionary with the status code 200
     """
-    get_city = do_check_id(city_id)
+    get_city = do_check_id(city.City, city_id)
     storage.delete(get_city)
     storage.save()
     response = {}
@@ -55,7 +55,7 @@ def do_create_city(request, state_id):
         Creates a city object
         Return: new city object
     """
-    do_check_id(state_id)
+    do_check_id(state.State, state_id)
     body_request = request.get_json()
     if (body_request is None):
         abort(400, 'Not a JSON')
@@ -73,7 +73,7 @@ def do_update_city(city_id, request):
     """
         Updates a City object
     """
-    get_city = do_check_id(city_id)
+    get_city = do_check_id(city.City, city_id)
     body_request = request.get_json()
     if (body_request is None):
         abort(400, 'Not a JSON')
