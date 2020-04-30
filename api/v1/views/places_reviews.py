@@ -29,7 +29,10 @@ def do_get_reviews(place_id, review_id):
         get_review = do_check_id(review.Review, review_id).to_dict()
         return jsonify(get_review)
     my_place = storage.get(place.Place, place_id)
-    all_reviews = my_place.reviews
+    try:
+        all_reviews = my_place.reviews
+    except Exception:
+        abort(404)
     reviews = []
     for c in all_reviews:
         reviews.append(c.to_dict())
@@ -79,9 +82,9 @@ def do_update_review(review_id, request):
         Updates a Review object
     """
     get_review = do_check_id(review.Review, review_id)
-    body_request = request.get_json(silent=True)
+    body_request = request.get_json()
     if (body_request is None):
-        abort(404, 'Not a JSON')
+        abort(400, 'Not a JSON')
     for k, v in body_request.items():
         if (k not in ('id', 'created_at', 'updated_at')):
             setattr(get_review, k, v)
@@ -89,8 +92,8 @@ def do_update_review(review_id, request):
     return jsonify(get_review.to_dict())
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'],
-                 defaults={'review_id': None})
+@app_views.route('/places/<place_id>/reviews/', methods=['GET', 'POST'],
+                 defaults={'review_id': None}, strict_slashes=False)
 @app_views.route('/reviews/<review_id>', defaults={'place_id': None},
                  methods=['GET', 'DELETE', 'PUT'])
 def reviews(place_id, review_id):
