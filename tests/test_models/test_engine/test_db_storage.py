@@ -97,11 +97,3 @@ class TestFileStorage(unittest.TestCase):
             self.assertRaises(Exception)
         self.assertEqual(res.id, first_state_id,
                          "output ID is not as expected")
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_count(self):
-        """count the number of objects in storage"""
-        self.assertGreaterEqual(
-            models.storage.count(),
-            models.storage.count(City),
-            "Count method issue when arg is present")
