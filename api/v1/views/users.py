@@ -6,12 +6,12 @@ from models import storage
 from models import user
 
 
-def do_check_id(user_id):
+def do_check_id(cls, user_id):
     """
         If the user_id is not linked to any User object, raise a 404 error
     """
     try:
-        get_user = storage.get(user.User, user_id)
+        get_user = storage.get(cls, user_id)
         get_user.to_dict()
     except Exception:
         abort(404)
@@ -24,7 +24,7 @@ def do_get_users(user_id):
        if user_id is not none get a User object
     """
     if (user_id is not None):
-        get_user = do_check_id(user_id).to_dict()
+        get_user = do_check_id(user.User, user_id).to_dict()
         return jsonify(get_user)
     all_users = storage.all(user.User)
     users = []
@@ -38,7 +38,7 @@ def do_delete_user(user_id):
         Deletes a User object
         Return: an empty dictionary with the status code 200
     """
-    get_user = do_check_id(user_id)
+    get_user = do_check_id(user.User, user_id)
     storage.delete(get_user)
     storage.save()
     response = {}
@@ -50,10 +50,10 @@ def do_create_user(request):
         Creates a user object
         Return: new user object
     """
+    body_request = request.get_json()
+    if (body_request is None):
+        abort(400, 'Not a JSON')
     try:
-        body_request = request.get_json(silent=True)
-        if (body_request is None):
-            abort(400, 'Not a JSON')
         email = body_request['email']
         password = body_request['password']
     except KeyError as e:
@@ -71,10 +71,10 @@ def do_update_user(user_id, request):
     """
         Updates a User object
     """
-    get_user = do_check_id(user_id)
-    body_request = request.get_json(silent=True)
+    get_user = do_check_id(user.User, user_id)
+    body_request = request.get_json()
     if (body_request is None):
-        abort(404, 'Not a JSON')
+        abort(400, 'Not a JSON')
     for k, v in body_request.items():
         if (k not in ('id', 'created_at', 'updated_at')):
             setattr(get_user, k, v)
@@ -83,7 +83,7 @@ def do_update_user(user_id, request):
 
 
 @app_views.route('/users/', methods=['GET', 'POST'],
-                 defaults={'user_id': None})
+                 defaults={'user_id': None}, strict_slashes=False)
 @app_views.route('/users/<user_id>',
                  methods=['GET', 'DELETE', 'PUT'])
 def users(user_id):

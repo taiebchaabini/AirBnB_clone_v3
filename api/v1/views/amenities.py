@@ -6,13 +6,13 @@ from models import storage
 from models import amenity
 
 
-def do_check_id(amenity_id):
+def do_check_id(cls, amenity_id):
     """
         If the amenity_id is not linked to
         any Amenity object, raise a 404 error
     """
     try:
-        get_amenity = storage.get(amenity.Amenity, amenity_id)
+        get_amenity = storage.get(cls, amenity_id)
         get_amenity.to_dict()
     except Exception:
         abort(404)
@@ -25,7 +25,7 @@ def do_get_amenities(amenity_id):
        if amenity_id is not none get a Amenity object
     """
     if (amenity_id is not None):
-        get_amenity = do_check_id(amenity_id).to_dict()
+        get_amenity = do_check_id(amenity.Amenity, amenity_id).to_dict()
         return jsonify(get_amenity)
     all_amenities = storage.all(amenity.Amenity)
     amenities = []
@@ -39,7 +39,7 @@ def do_delete_amenity(amenity_id):
         Deletes a Amenity object
         Return: an empty dictionary with the status code 200
     """
-    get_amenity = do_check_id(amenity_id)
+    get_amenity = do_check_id(amenity.Amenity, amenity_id)
     storage.delete(get_amenity)
     storage.save()
     response = {}
@@ -51,10 +51,10 @@ def do_create_amenity(request):
         Creates a amenity object
         Return: new amenity object
     """
+    body_request = request.get_json()
+    if (body_request is None):
+        abort(400, 'Not a JSON')
     try:
-        body_request = request.get_json(silent=True)
-        if (body_request is None):
-            abort(400, 'Not a JSON')
         amenity_name = body_request['name']
     except KeyError:
         abort(400, 'Missing name')
@@ -68,10 +68,10 @@ def do_update_amenity(amenity_id, request):
     """
         Updates a Amenity object
     """
-    get_amenity = do_check_id(amenity_id)
-    body_request = request.get_json(silent=True)
+    get_amenity = do_check_id(amenity.Amenity, amenity_id)
+    body_request = request.get_json()
     if (body_request is None):
-        abort(404, 'Not a JSON')
+        abort(400, 'Not a JSON')
     for k, v in body_request.items():
         if (k not in ('id', 'created_at', 'updated_at')):
             setattr(get_amenity, k, v)
@@ -80,7 +80,7 @@ def do_update_amenity(amenity_id, request):
 
 
 @app_views.route('/amenities/', methods=['GET', 'POST'],
-                 defaults={'amenity_id': None})
+                 defaults={'amenity_id': None}, strict_slashes=False)
 @app_views.route('/amenities/<amenity_id>', methods=['GET', 'DELETE', 'PUT'])
 def amenities(amenity_id):
     """

@@ -50,10 +50,10 @@ def do_create_state(request):
         Creates a state object
         Return: new state object
     """
+    body_request = request.get_json()
+    if (body_request is None):
+        abort(400, 'Not a JSON')
     try:
-        body_request = request.get_json(silent=True)
-        if (body_request is None):
-            abort(400, 'Not a JSON TEST')
         state_name = body_request['name']
     except KeyError:
         abort(400, 'Missing name')
@@ -68,9 +68,9 @@ def do_update_state(state_id, request):
         Updates a State object
     """
     get_state = do_check_id(state_id)
-    body_request = request.get_json(silent=True)
+    body_request = request.get_json()
     if (body_request is None):
-        abort(404, 'Not a JSON')
+        abort(400, 'Not a JSON')
     for k, v in body_request.items():
         if (k not in ('id', 'created_at', 'updated_at')):
             setattr(get_state, k, v)
@@ -79,7 +79,7 @@ def do_update_state(state_id, request):
 
 
 @app_views.route('/states/', methods=['GET', 'POST'],
-                 defaults={'state_id': None})
+                 defaults={'state_id': None}, strict_slashes=False)
 @app_views.route('/states/<state_id>',
                  methods=['GET', 'DELETE', 'PUT'])
 def states(state_id):

@@ -29,7 +29,10 @@ def do_get_places(city_id, place_id):
         get_place = do_check_id(place.Place, place_id).to_dict()
         return jsonify(get_place)
     my_city = storage.get(city.City, city_id)
-    all_places = my_city.places
+    try:
+        all_places = my_city.places
+    except Exception:
+        abort(404)
     places = []
     for c in all_places:
         places.append(c.to_dict())
@@ -54,7 +57,7 @@ def do_create_place(request, city_id):
         Return: new place object
     """
     do_check_id(city.City, city_id)
-    body_request = request.get_json(silent=True)
+    body_request = request.get_json()
     if (body_request is None):
         abort(400, 'Not a JSON')
     try:
@@ -77,9 +80,9 @@ def do_update_place(place_id, request):
         Updates a Place object
     """
     get_place = do_check_id(place.Place, place_id)
-    body_request = request.get_json(silent=True)
+    body_request = request.get_json()
     if (body_request is None):
-        abort(404, 'Not a JSON')
+        abort(400, 'Not a JSON')
     for k, v in body_request.items():
         if (k not in ('id', 'created_at', 'updated_at')):
             setattr(get_place, k, v)
@@ -87,8 +90,8 @@ def do_update_place(place_id, request):
     return jsonify(get_place.to_dict())
 
 
-@app_views.route('/cities/<city_id>/places', methods=['GET', 'POST'],
-                 defaults={'place_id': None})
+@app_views.route('/cities/<city_id>/places/', methods=['GET', 'POST'],
+                 defaults={'place_id': None}, strict_slashes=False)
 @app_views.route('/places/<place_id>', defaults={'city_id': None},
                  methods=['GET', 'DELETE', 'PUT'])
 def places(city_id, place_id):
