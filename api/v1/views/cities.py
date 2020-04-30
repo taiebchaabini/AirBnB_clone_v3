@@ -28,7 +28,10 @@ def do_get_cities(state_id, city_id):
         get_city = do_check_id(city_id).to_dict()
         return jsonify(get_city)
     my_state = storage.get(state.State, state_id)
-    all_cities = my_state.cities
+    try:
+        all_cities = my_state.cities
+    except Exception:
+        abort(404)
     cities = []
     for c in all_cities:
         cities.append(c.to_dict())
