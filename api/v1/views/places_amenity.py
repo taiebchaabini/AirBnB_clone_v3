@@ -9,7 +9,7 @@ from models import amenity
 
 def do_check_id(cls, amenity_id):
     """
-        If the amenity_id is not linked to any Amenity object, raise a 404 error
+    If the cls is not linked to any Cls object, raise a 404 error
     """
     try:
         get_amenity = storage.get(cls, amenity_id)
@@ -67,8 +67,8 @@ def do_create_amenity(place_id, amenity_id):
 
 @app_views.route('/places/<place_id>/amenities/', methods=['GET'],
                  strict_slashes=False)
-@app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST', 'DELETE'],
-                 strict_slashes=False)
+@app_views.route('/places/<place_id>/amenities/<amenity_id>',
+                 methods=['POST', 'DELETE'], strict_slashes=False)
 def amenities(place_id, amenity_id):
     """
         Handle amenities requests with needed functions
