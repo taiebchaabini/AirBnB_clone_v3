@@ -57,11 +57,12 @@ def do_create_amenity(place_id, amenity_id):
         Links a amenity object
         Return: linked amenity object
     """
-    do_check_id(place.Place, place_id)
+    my_place = do_check_id(place.Place, place_id)
     get_amenity = do_check_id(amenity.Amenity, amenity_id)
-    if (get_amenity.place_id == place_id):
-        return jsonify(get_amenity.to_dict()), 200
-    get_amenity.place_id = place_id
+    for i in range(len(my_place.amenities)):
+        if (my_place.amenities[i].id == amenity_id):
+            return jsonify(get_amenity.to_dict()), 200
+    my_place.amenities.append(get_amenity)
     storage.save()
     return jsonify(get_amenity.to_dict()), 201
 
