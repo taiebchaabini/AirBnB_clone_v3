@@ -65,8 +65,12 @@ def do_create_amenity(place_id, amenity_id):
     return jsonify(get_amenity.to_dict()), 201
 
 
+@app_views.route('/places/<place_id>/amenities',
+                 methods=['GET'],
+                 defaults={'amenity_id': None},
+                 strict_slashes=False)
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
-                 methods=['GET', 'DELETE', 'POST'],
+                 methods=['DELETE', 'POST'],
                  defaults={'amenity_id': None},
                  strict_slashes=False)
 def places_amenities(place_id, amenity_id):
