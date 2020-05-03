@@ -38,17 +38,18 @@ def do_get_amenities(place_id):
 
 def do_delete_amenity(place_id, amenity_id):
     """
-        Deletes a Amenity object
+        Deletes the link between Amenity object and a Place
         Return: an empty dictionary with the status code 200
     """
-    do_check_id(place.Place, place_id)
-    get_amenity = do_check_id(amenity.Amenity, amenity_id)
-    if (get_amenity.place_id != place_id):
-        abort(404)
-    storage.delete(get_amenity)
-    storage.save()
-    response = {}
-    return jsonify(response), 200
+    my_place = do_check_id(place.Place, place_id)
+    do_check_id(amenity.Amenity, amenity_id)
+    for i in range(len(my_place.amenities)):
+        if (my_place.amenities[i].id == amenity_id):
+            del(my_place.amenities[i])
+            storage.save()
+            response = {}
+            return jsonify(response), 200
+    abort(404)
 
 
 def do_create_amenity(place_id, amenity_id):
@@ -71,7 +72,6 @@ def do_create_amenity(place_id, amenity_id):
                  strict_slashes=False)
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                  methods=['DELETE', 'POST'],
-                 defaults={'amenity_id': None},
                  strict_slashes=False)
 def places_amenities(place_id, amenity_id):
     """
