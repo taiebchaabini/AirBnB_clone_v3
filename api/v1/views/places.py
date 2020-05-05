@@ -104,6 +104,7 @@ def do_search(request):
         abort(400, 'Not a JSON')
     places_list = []
     places_amenity_list = []
+    place_amenities = []
     all_cities = []
     states = body_request.get('states')
     cities = body_request.get('cities')
@@ -131,13 +132,15 @@ def do_search(request):
             return jsonify({})
         for p in places_list:
             place_id = p.get('id')
-            get_amenities = do_get_amenities(place_id).json
-            for a in get_amenities:
-                amenity_id = a.get('id')
-                if(amenity_id in amenities):
-                    if p not in places_amenity_list:
-                        places_amenity_list.append(p)
-        return jsonify(places_amenity_list)
+            get_amenities = storage.get(place.Place, place_id)
+            amenity_id = get_amenities.amenities
+            for a in amenity_id:
+                place_amenities.append(a.id)
+            for a in amenities:
+                if a not in place_amenities:
+                    places_list.remove(p)
+            place_amenities = []
+
     return jsonify(places_list)
 
 
