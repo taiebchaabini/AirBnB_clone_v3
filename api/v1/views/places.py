@@ -108,11 +108,10 @@ def do_search(request):
     states = body_request.get('states')
     cities = body_request.get('cities')
     amenities = body_request.get('amenities')
-    if len(body_request) == 0:
+    if len(body_request) == 0 or (states is None and cities is None):
         places = storage.all(place.Place)
         for p in places.values():
             places_list.append(p.to_dict())
-        return jsonify(places_list)
     if states is not None and len(states) is not 0:
         for id in states:
             get_cities = do_get_cities(id, None).json
