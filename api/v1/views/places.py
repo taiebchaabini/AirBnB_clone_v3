@@ -126,7 +126,9 @@ def do_search(request):
             places = do_get_places(id, None)
             for p in places.json:
                 places_list.append(p)
-    if amenities is not None and len(amenities) is not 0:
+    if amenities is not None:
+        if (len(amenities) is 0):
+            return jsonify({})
         for p in places_list:
             place_id = p.get('id')
             get_amenities = do_get_amenities(place_id).json
