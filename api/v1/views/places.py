@@ -134,9 +134,10 @@ def do_search(request):
             amenity_id = get_amenities.amenities
             for a in amenity_id:
                 place_amenities.append(a.id)
-                if (a.id not in amenities):
-                    places_list.remove(p)
+                if (a.id in amenities):
+                    places_amenity_list.append(p)
             place_amenities = []
+        return jsonify(places_amenity_list)
 
     return jsonify(places_list)
 
