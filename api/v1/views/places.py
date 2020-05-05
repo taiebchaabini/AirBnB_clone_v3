@@ -127,17 +127,14 @@ def do_search(request):
             places = do_get_places(id, None)
             for p in places.json:
                 places_list.append(p)
-    if amenities is not None:
-        if (len(amenities) is 0):
-            return jsonify({})
+    if amenities is not None and len(amenities) is not 0:
         for p in places_list:
             place_id = p.get('id')
             get_amenities = storage.get(place.Place, place_id)
             amenity_id = get_amenities.amenities
             for a in amenity_id:
                 place_amenities.append(a.id)
-            for a in amenities:
-                if a not in place_amenities:
+                if (a.id not in amenities):
                     places_list.remove(p)
             place_amenities = []
 
